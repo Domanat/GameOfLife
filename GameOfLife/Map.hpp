@@ -8,7 +8,9 @@ class Map
 {
 public:
 	Map();
-	void DrawMap();
+	void DrawMap(sf::RenderWindow& window);
+
+	void ChangeColorOfCell(int x, int y);
 
 private:
 	void FillMap();

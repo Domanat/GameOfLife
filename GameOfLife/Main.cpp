@@ -167,11 +167,32 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "Map.hpp"
+#include <iostream>
+
+void drawMap(sf::RenderWindow& window)
+{
+	sf::RectangleShape cell(sf::Vector2f(cellWidth - 2, cellHeight - 2));
+	cell.setOutlineThickness(1);
+	cell.setOutlineColor(sf::Color::Green);
+	cell.setFillColor(sf::Color::Black);
+
+	int numberOfCellsY = screenHeight / 20;
+
+	for (int y = 1; y < screenHeight; y += cellHeight)
+	{
+		for (int x = 1; x < screenWidth; x += cellWidth)
+		{
+			cell.setPosition(sf::Vector2f(x, y));
+			window.draw(cell);
+		}
+	}
+}
 
 int main()
 {
 	Map map;
-	/*sf::RenderWindow window(sf::VideoMode(800, 600), "Window");
+
+	sf::RenderWindow window(sf::VideoMode(800, 600), "Window");
 
 	while (window.isOpen())
 	{
@@ -179,18 +200,45 @@ int main()
 
 		while (window.pollEvent(event))
 		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+
+				sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+				
+				if (mousePos.x < 0 || mousePos.x > screenWidth || mousePos.y < 0 || mousePos.y > screenHeight)
+				{
+					std::cout << "Out of range" << std::endl;
+					break;
+				}
+
+				Point clickedCell(mousePos.x / cellWidth, mousePos.y / cellHeight);
+				std::cout << "Clicked cell: " << clickedCell.x << "  " << clickedCell.y << std::endl;
+
+				map.ChangeColorOfCell(clickedCell.x, clickedCell.y);
+			}
+
 			if (event.type == sf::Event::Closed)
 				window.close();
+
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Escape)
+					window.close();
+				break;
+			}
 		}
 
 		window.clear(sf::Color::Black);
 
-		sf::RectangleShape line(sf::Vector2f(800, 5));
-		line.setPosition(sf::Vector2f(0, 300));
+		map.DrawMap(window);
 
-		window.draw(line);
 		window.display();
-	}*/
+	}
 
 	return 0;
 }
